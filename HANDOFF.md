@@ -146,6 +146,18 @@ Vaneh planteó una idea a partir de una frustración real con Social Boots (no t
 - **Nuevo criterio para elegir el modelo base** (sumar a la prueba comparativa pendiente entre Wan2.2-S2V / HunyuanVideo-Avatar / daVinci-MagiHuman): tiene que soportar ajuste incremental barato por perfil (ej. adaptadores tipo LoRA), para que re-entrenar con lo aprobado sea viable en costo y no obligue a reentrenar el modelo completo cada vez.
 - **No implementado todavía** — es una decisión de diseño para cuando se construya el pipeline de generación real, no bloquea el arranque actual (login + subida de archivos).
 
+## Novedades 06/09 (tercera vuelta) — infraestructura del MVP completa: deploy, cuentas y dominio
+
+**Todo el checklist de infraestructura de la sección anterior (puntos 1-5) ya está resuelto.** Detalle de cómo se hizo cada uno, porque no fue exactamente como estaba planeado:
+
+- **Deploy real: no se usó `.github/workflows/deploy.yml` (no existe, y no hace falta).** Vaneh conectó el repo directo desde el dashboard de Cloudflare ("Connect to Git" / Workers Builds) — Cloudflare re-deploya solo en cada push a `main`, sin secrets de GitHub Actions ni `wrangler deploy` manual. Si en el futuro se agrega un `deploy.yml` tipo `cosmart-workers`, sería redundante con esto — pensarlo dos veces antes de sumarlo.
+- **⚠️ Discrepancia de nombre sin resolver, no bloquea nada**: el Worker quedó desplegado como **`iacosmart`** (nombre del repo), no como `cosmart-ia` que dice `wrangler.toml` — Cloudflare Workers Builds usó el nombre del repo en vez de leer el `name` del toml. URL real: `https://iacosmart.conglomeradocosmart.workers.dev`. Si se quiere prolijo habría que alinear el toml, pero funciona igual como está.
+- **`SETUP_SECRET` cargado por Vaneh directo en el dashboard** (Worker → Settings → Variables and Secrets → tipo Secreto), valor acordado en el chat (no se commitea a git, como corresponde).
+- **Las 2 cuentas iniciales ya existen**: `ger@cosmart.com.ar` y `vaneh@cosmart.com.ar`, ambas rol `admin`. Se crearon disparando `POST /api/setup` una vez por persona — no desde esta sesión directo (el entorno de esta sesión no tiene salida a internet abierta, ni siquiera a los propios `*.workers.dev` de Cloudflare) sino vía un workflow de GitHub Actions temporal (`.github/workflows/setup-cuentas.yml`, corrido dos veces y borrado después de usarlo) que sí tiene salida libre. Si hace falta crear una cuenta más adelante (nuevo admin, o el primer usuario externo pago), repetir ese patrón o pedirle a Vaneh que lo dispare ella misma desde la consola del navegador en la página de login.
+- **Dominio `ia.cosmart.com.ar` ya apuntado por Vaneh** al Worker (custom domain, hecho desde su lado en Cloudflare).
+
+**Estado real ahora**: el login + subida de archivos a R2 está en producción, usable por Vaneh y Ger ya mismo. Lo que sigue es 100% lo que ya estaba anotado como pendiente: la prueba comparativa de modelos (Wan2.2-S2V / HunyuanVideo-Avatar / daVinci-MagiHuman, demos gratis) y después el pipeline de generación real — nada de esa parte se empezó todavía.
+
 ## Qué es esto
 
 Una IA propia de COSMART para generar videos a partir de fotos, audios y guiones — pensada para resolver un problema puntual de Vaneh: no tiene tiempo para crear contenido, y las herramientas que probó o la hacen mal (le cambian la cara) o son inaccesibles en precio. Ella la describe como su proyecto más grande desde que empezó, con expectativa fuerte de impacto económico.
