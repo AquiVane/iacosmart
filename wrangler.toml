@@ -1,0 +1,25 @@
+name = "cosmart-ia"
+main = "src/index.js"
+compatibility_date = "2026-09-05"
+
+# ── Assets estáticos (public/) servidos directo por el Worker ──────
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+# ── Bindings (creados vía API de Cloudflare, 05/09) ─────────────────
+[[kv_namespaces]]
+binding = "IA_USERS"
+id = "1c71e0ffa3ec42b08718c595f8beae32"
+
+[[kv_namespaces]]
+binding = "IA_SESSIONS"
+id = "a82cdf114eeb431ea6e310c8da8629e3"
+
+[[r2_buckets]]
+binding = "IA_PERFILES"
+bucket_name = "cosmart-ia-perfiles"
+
+# Secrets (NO van acá — se cargan con `wrangler secret put NOMBRE`
+# o desde el dashboard de Cloudflare, nunca en este archivo):
+#   SETUP_SECRET → string random para crear las cuentas iniciales (Vaneh, Ger)

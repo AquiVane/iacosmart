@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COSMART IA — Ingresar</title>
+<link rel="icon" href="img/logo-cosmart.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Bricolage+Grotesque:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1a40;
+    --navy2: #0D2B6B;
+    --verde: #62B89F;
+    --verde-d: #408E77;
+    --celeste: #3A8FC7;
+    --celeste-pastel: #D3E6F0;
+    --rojo: #E02020;
+    --texto: #F5F8FC;
+    --texto-tenue: rgba(245,248,252,0.6);
+    --borde: rgba(245,248,252,0.14);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--navy);
+    color: var(--texto);
+    font-family: 'DM Sans', sans-serif;
+    padding: 24px;
+  }
+  .card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--celeste-pastel);
+    border: 1px solid rgba(9,28,71,0.08);
+    border-radius: 16px;
+    padding: 32px 28px;
+  }
+  .logo { display: block; margin: 0 auto 20px; max-width: 150px; }
+  h1 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 1.2rem;
+    text-align: center;
+    margin: 0 0 24px;
+    font-weight: 700;
+    color: var(--verde-d);
+  }
+  label { display: block; font-size: 0.85rem; margin-bottom: 6px; color: var(--verde-d); }
+  input {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    border: 1.5px solid rgba(9,28,71,0.1);
+    background: #fff;
+    color: var(--verde-d);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+  }
+  input:focus { outline: none; border-color: var(--verde); }
+  button {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    background: var(--verde);
+    color: #06231d;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: filter .15s;
+  }
+  button:hover { filter: brightness(1.08); }
+  button:disabled { opacity: 0.6; cursor: default; }
+  #msgError {
+    color: var(--rojo);
+    font-size: 0.85rem;
+    text-align: center;
+    margin: 0 0 16px;
+    min-height: 1.2em;
+  }
+</style>
+</head>
+<body>
+  <form class="card" id="formLogin">
+    <img class="logo" src="img/logo-cosmart.png" alt="COSMART">
+    <h1>COSMART IA</h1>
+    <p id="msgError"></p>
+    <label for="email">Email</label>
+    <input type="email" id="email" autocomplete="username" required>
+    <label for="password">Contraseña</label>
+    <input type="password" id="password" autocomplete="current-password" required>
+    <button type="submit" id="btnIngresar">Ingresar</button>
+  </form>
+
+<script>
+const API = location.origin;
+
+document.getElementById('formLogin').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('btnIngresar');
+  const msg = document.getElementById('msgError');
+  msg.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Ingresando...';
+  try {
+    const res = await fetch(`${API}/api/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'No se pudo ingresar');
+    localStorage.setItem('ia_token', data.token);
+    localStorage.setItem('ia_nombre', data.nombre);
+    localStorage.setItem('ia_rol', data.rol);
+    location.href = 'perfil.html';
+  } catch (e2) {
+    msg.textContent = e2.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Ingresar';
+  }
+});
+</script>
+</body>
+</html>

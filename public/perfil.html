@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COSMART IA — Mi perfil</title>
+<link rel="icon" href="img/logo-cosmart.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Bricolage+Grotesque:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1a40;
+    --navy2: #0D2B6B;
+    --verde: #62B89F;
+    --verde-d: #408E77;
+    --verde-claro: #D7E6E2;
+    --celeste: #3A8FC7;
+    --celeste-claro: #cfe4f4;
+    --celeste-pastel: #D3E6F0;
+    --rojo: #E02020;
+    --texto: #F5F8FC;
+    --texto-tenue: rgba(245,248,252,0.6);
+    --borde: rgba(245,248,252,0.14);
+    --bg-claro: #f4f8fc;
+    --texto-oscuro: #0D2B6B;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg-claro);
+    color: var(--texto-oscuro);
+    font-family: 'DM Sans', sans-serif;
+  }
+  header {
+    background: var(--navy);
+    color: var(--texto);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  header .marca { display: flex; align-items: center; gap: 10px; }
+  header img { height: 30px; }
+  header h1 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 1rem;
+    margin: 0;
+    font-weight: 700;
+  }
+  header .usuario { display: flex; align-items: center; gap: 12px; font-size: 0.85rem; color: var(--texto-tenue); }
+  #btnSalir {
+    background: transparent;
+    border: 1px solid var(--borde);
+    color: var(--texto);
+    padding: 7px 14px;
+    border-radius: 7px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    cursor: pointer;
+  }
+  main { max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
+  .intro {
+    background: var(--celeste-pastel);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 22px;
+    border: 1px solid rgba(9,28,71,0.08);
+  }
+  .intro h2 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 1.05rem;
+    margin: 0 0 8px;
+    color: var(--verde-d);
+  }
+  .intro p { margin: 0; font-size: 0.9rem; line-height: 1.5; color: #4a5a75; }
+
+  .seccion {
+    background: var(--celeste-pastel);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+    border: 1px solid rgba(9,28,71,0.08);
+  }
+  .seccion-header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+  .seccion h3 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 1rem;
+    margin: 0;
+    color: var(--verde-d);
+  }
+  .seccion .contador { font-size: 0.8rem; color: var(--verde-d); font-weight: 600; }
+  .seccion .ayuda { font-size: 0.82rem; color: #6b7a94; margin: 0 0 14px; line-height: 1.5; }
+
+  .subir-caja {
+    background: #fff;
+    border: 2px dashed var(--verde-claro);
+    border-radius: 10px;
+    padding: 18px;
+    text-align: center;
+    margin-bottom: 16px;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  .subir-caja:hover, .subir-caja.arrastrando { border-color: var(--verde); background: #f0faf7; }
+  .subir-caja input { display: none; }
+  .subir-caja .txt { font-size: 0.88rem; color: var(--verde-d); font-weight: 600; }
+  .subir-caja .txt2 { font-size: 0.78rem; color: #8695ad; margin-top: 4px; }
+
+  .grid-archivos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+  }
+  .item {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f0f4fa;
+    border: 1px solid #e1e9f2;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .item img, .item video { width: 100%; height: 100%; object-fit: cover; }
+  .item .icono-tipo { font-size: 1.8rem; color: var(--verde-d); }
+  .item .nombre-audio {
+    font-size: 0.68rem;
+    color: #4a5a75;
+    padding: 0 6px;
+    text-align: center;
+    word-break: break-word;
+  }
+  .item .borrar {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(9,28,71,0.75);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 0.75rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .vacio { font-size: 0.85rem; color: #9aa8bf; padding: 10px 0; }
+
+  footer {
+    background: #06122e;
+    color: rgba(245,248,252,0.6);
+    font-size: 0.78rem;
+    text-align: center;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  footer img { height: 22px; width: auto; }
+  footer .separador { opacity: 0.5; }
+  footer a { color: rgba(245,248,252,0.75); text-decoration: none; }
+  footer a:hover { color: var(--verde); text-decoration: underline; }
+
+  @media (max-width: 480px) {
+    header { padding: 12px 14px; }
+    main { padding: 14px 10px 50px; }
+    .seccion, .intro { padding: 14px; }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="marca">
+      <img src="img/logo-cosmart.png" alt="COSMART">
+      <h1>COSMART IA</h1>
+    </div>
+    <div class="usuario">
+      <span id="nombreUsuario"></span>
+      <button id="btnSalir">Salir</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="intro">
+      <h2>Tu perfil para generar videos</h2>
+      <p>Cuantas más condiciones distintas (ángulo, luz, expresión) tengan tus fotos, y cuanto más natural sea tu voz en el audio, mejor va a salir el parecido — no hace falta que sea perfecto, pero sí variado.</p>
+    </div>
+
+    <section class="seccion" data-tipo="foto">
+      <div class="seccion-header">
+        <h3>Fotos</h3>
+        <span class="contador" id="contador-foto">0 fotos</span>
+      </div>
+      <p class="ayuda">Recomendado: 30-50 fotos. Importa más la variedad que la cantidad — de frente, de perfil, con luz natural y de interior, sonriendo y con cara neutra, de cerca y de cuerpo entero.</p>
+      <label class="subir-caja">
+        <input type="file" accept="image/*" multiple data-tipo="foto">
+        <div class="txt">Tocá para subir fotos</div>
+        <div class="txt2">JPG, PNG, WEBP o HEIC</div>
+      </label>
+      <div class="grid-archivos" id="grid-foto"></div>
+    </section>
+
+    <section class="seccion" data-tipo="video">
+      <div class="seccion-header">
+        <h3>Videos</h3>
+        <span class="contador" id="contador-video">0 videos</span>
+      </div>
+      <p class="ayuda">Recomendado: 3-5 clips de 15 a 60 segundos, hablando de frente. Esto capta gestos y movimiento natural que una foto no puede dar.</p>
+      <label class="subir-caja">
+        <input type="file" accept="video/mp4,video/quicktime,video/webm" multiple data-tipo="video">
+        <div class="txt">Tocá para subir videos</div>
+        <div class="txt2">MP4, MOV o WEBM</div>
+      </label>
+      <div class="grid-archivos" id="grid-video"></div>
+    </section>
+
+    <section class="seccion" data-tipo="audio">
+      <div class="seccion-header">
+        <h3>Audios</h3>
+        <span class="contador" id="contador-audio">0 audios</span>
+      </div>
+      <p class="ayuda">Recomendado: 5 a 10 minutos en total, en tramos cortos. Variá el tono/emoción (no todo monótono) para que la voz clonada suene natural.</p>
+      <label class="subir-caja">
+        <input type="file" accept="audio/mpeg,audio/mp4,audio/wav,audio/x-m4a,audio/ogg" multiple data-tipo="audio">
+        <div class="txt">Tocá para subir audios</div>
+        <div class="txt2">MP3, M4A, WAV u OGG</div>
+      </label>
+      <div class="grid-archivos" id="grid-audio"></div>
+    </section>
+  </main>
+
+  <footer>
+    <img src="img/logo-cosmart.png" alt="COSMART">
+    <span class="separador">·</span>
+    <a href="https://www.cosmart.com.ar" target="_blank" rel="noopener">www.cosmart.com.ar</a>
+  </footer>
+
+<script>
+const API = location.origin;
+const token = localStorage.getItem('ia_token');
+if (!token) location.href = 'login.html';
+
+document.getElementById('nombreUsuario').textContent = localStorage.getItem('ia_nombre') || '';
+document.getElementById('btnSalir').addEventListener('click', async () => {
+  await fetch(`${API}/api/logout`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
+  localStorage.clear();
+  location.href = 'login.html';
+});
+
+function authFetch(path, opts = {}) {
+  opts.headers = { ...(opts.headers || {}), Authorization: `Bearer ${token}` };
+  return fetch(`${API}${path}`, opts);
+}
+
+async function cargarMe() {
+  const res = await authFetch('/api/me');
+  if (res.status === 401) { localStorage.clear(); location.href = 'login.html'; return; }
+}
+
+let archivosCache = [];
+
+async function cargarArchivos() {
+  const res = await authFetch('/api/archivos');
+  if (!res.ok) return;
+  const data = await res.json();
+  archivosCache = data.archivos || [];
+  ['foto', 'video', 'audio'].forEach(renderGrid);
+}
+
+function renderGrid(tipo) {
+  const grid = document.getElementById(`grid-${tipo}`);
+  const items = archivosCache.filter(a => a.tipo === tipo);
+  document.getElementById(`contador-${tipo}`).textContent = `${items.length} ${tipo}${items.length === 1 ? '' : 's'}`;
+  if (!items.length) {
+    grid.innerHTML = '<p class="vacio">Todavía no subiste nada acá.</p>';
+    return;
+  }
+  grid.innerHTML = items.map(a => {
+    const url = `${API}/api/archivos/${a.id}/contenido`;
+    let contenido;
+    if (tipo === 'foto') {
+      contenido = `<img src="${url}" alt="${escapeHtml(a.nombreOriginal)}" loading="lazy">`;
+    } else if (tipo === 'video') {
+      contenido = `<video src="${url}" muted></video>`;
+    } else {
+      contenido = `<div><div class="icono-tipo">🔊</div><div class="nombre-audio">${escapeHtml(a.nombreOriginal)}</div></div>`;
+    }
+    return `<div class="item" data-id="${a.id}">${contenido}<button class="borrar" data-id="${a.id}" title="Borrar">✕</button></div>`;
+  }).join('');
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+document.querySelectorAll('.subir-caja input[type=file]').forEach(input => {
+  input.addEventListener('change', async () => {
+    const tipo = input.dataset.tipo;
+    const files = Array.from(input.files || []);
+    input.value = '';
+    for (const file of files) {
+      await subirArchivo(tipo, file);
+    }
+    cargarArchivos();
+  });
+});
+
+async function subirArchivo(tipo, file) {
+  const form = new FormData();
+  form.append('tipo', tipo);
+  form.append('archivo', file);
+  try {
+    const res = await authFetch('/api/archivos', { method: 'POST', body: form });
+    if (!res.ok) {
+      const d = await res.json().catch(() => ({}));
+      alert(`No se pudo subir "${file.name}": ${d.error || 'error desconocido'}`);
+    }
+  } catch (e) {
+    alert(`No se pudo subir "${file.name}"`);
+  }
+}
+
+document.querySelectorAll('.grid-archivos').forEach(grid => {
+  grid.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.borrar');
+    if (!btn) return;
+    if (!confirm('¿Borrar este archivo?')) return;
+    const res = await authFetch(`/api/archivos/${btn.dataset.id}`, { method: 'DELETE' });
+    if (res.ok) cargarArchivos();
+  });
+});
+
+cargarMe();
+cargarArchivos();
+</script>
+</body>
+</html>
